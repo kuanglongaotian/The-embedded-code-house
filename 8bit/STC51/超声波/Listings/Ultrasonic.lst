@@ -1,0 +1,52 @@
+C51 COMPILER V9.54   ULTRASONIC                                                            09/11/2021 15:08:13 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE ULTRASONIC
+OBJECT MODULE PLACED IN .\Objects\Ultrasonic.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE Ultrasonic.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\
+                    -Ultrasonic.lst) TABS(2) OBJECT(.\Objects\Ultrasonic.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Timer0.H"
+   3          #include "LCD1602.H"
+   4          
+   5          void Delay10us()    //@11.0592MHz
+   6          {
+   7   1        unsigned char i;
+   8   1        i = 2;
+   9   1        while (--i);
+  10   1      }
+  11          
+  12          void Transmit()
+  13          {
+  14   1        P1_1=1;
+  15   1        Delay10us();
+  16   1        P1_1=0;
+  17   1      }
+  18          
+  19          void Calc()
+  20          {
+  21   1        unsigned int Time,Distance;
+  22   1        Time=TH0*256+TL0;
+  23   1        Time*=12/11.0592; 
+  24   1        TH0=0;
+  25   1        TL0=0;
+  26   1        Distance=Time*0.017;//340m/s=340mm/ms=0.340mm/us=0.017cm/us
+  27   1        LCD_ShowNum(1,1,Distance,3);
+  28   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     88    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

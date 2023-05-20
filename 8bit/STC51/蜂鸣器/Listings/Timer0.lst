@@ -1,0 +1,64 @@
+C51 COMPILER V9.54   TIMER0                                                                08/29/2021 23:39:03 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE TIMER0
+OBJECT MODULE PLACED IN .\Objects\Timer0.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE Timer0.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\Time
+                    -r0.lst) TABS(2) OBJECT(.\Objects\Timer0.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          
+   3          /*TMOD默认为0000 0000
+   4          TMOD只能整体操作，为了不影响Timer0和Timer1，所以采用与和或操作
+   5          TMOD=TMOD&0xF0,只对低四位清零，保留高四位
+   6          TMOD=TMOD&0x0F,只对高四位清零，保留低四位
+   7          TMOD=TMOD|0x0X,只对高四位操作，保留低四位
+   8          TMOD=TMOD|0xX0,只对高四位操作，保留低四位
+   9          清零采用与，赋值采用或
+  10          */
+  11          /*TH TL分别为8位，既00000000 00000000，总共可计时65535μs*/
+  12          
+  13          void Timer0_Init()//11.0592晶振，所以定时器+1的频率比12晶振慢
+  14          {
+  15   1        TMOD=TMOD&0xF0;//高位保留，地位清零
+  16   1        TMOD=TMOD|0x01;//0000 0001，只启动定时器0，并设置为16位定时器/计数器模式
+  17   1        TF0=0;
+  18   1        TR0=1;
+  19   1        TH0=0xFC;//(65535-1000*11.0592/12)/256,设置定时器高8位
+  20   1        TL0=0x66;//(65535-1000*11.0592/12)%256+1,设置定时器低8位，总共定时1ms
+  21   1        ET0=1;//设置中断
+  22   1        EA=1;
+  23   1        PT0=0;//设置第一优先级
+  24   1      }
+  25          
+  26          /*中断函数模板
+  27          void Timer0_Routine() interrupt 1
+  28          { 
+  29            static unsigned int Count=0;//设置静态局部变量
+  30            TH0=0xFC;
+  31            TL0=0x18;
+  32            Count++;
+  33            if(Count==500)
+  34            {
+  35              Count=0;
+  36              if(LedMode==0)P2=_crol_(P2,1);
+  37              if(LedMode==1)P2=_cror_(P2,1);
+  38            }
+  39          }
+  40          */
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     23    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

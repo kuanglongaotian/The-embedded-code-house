@@ -1,0 +1,12 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\LCD1602.obj",
+".\Objects\Delay1ms.obj",
+".\Objects\One_wire.obj",
+".\Objects\DS18B20.obj",
+".\Objects\AT24C02.obj",
+".\Objects\Key.obj",
+".\Objects\I2c.obj" 
+TO ".\Objects\Project_12" 
+PRINT(".\Listings\Project_12.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

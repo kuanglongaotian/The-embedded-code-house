@@ -1,0 +1,84 @@
+C51 COMPILER V9.54   ONE_WIRE                                                              09/03/2021 23:10:33 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE ONE_WIRE
+OBJECT MODULE PLACED IN .\Objects\One_wire.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE One_wire.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\On
+                    -e_wire.lst) TABS(2) OBJECT(.\Objects\One_wire.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          
+   3          sbit OneWire_DQ=P3^7;
+   4          
+   5          unsigned char OneWire_Init()
+   6          {
+   7   1        unsigned char AckBit,i;
+   8   1        OneWire_DQ=1;
+   9   1        OneWire_DQ=0;
+  10   1        i = 227;while (--i);//delay 500us
+  11   1        OneWire_DQ=1;
+  12   1        i = 25;while (--i);//delay 60us
+  13   1        AckBit=OneWire_DQ;
+  14   1        i = 227;while (--i);//delay 500us
+  15   1        return AckBit;
+  16   1      }
+  17          
+  18          void OneWire_SendBit(unsigned char Bit)
+  19          {
+  20   1        unsigned char i;
+  21   1        OneWire_DQ=0;
+  22   1        i = 3;while (--i);//delay 10us
+  23   1        OneWire_DQ=Bit;
+  24   1        i = 22;while (--i);//delay 50us
+  25   1        OneWire_DQ=1;
+  26   1      }
+  27          
+  28          unsigned char OneWire_ReceiveBit()
+  29          {
+  30   1        unsigned char Bit,i;
+  31   1        OneWire_DQ=0;
+  32   1        i = 1;while (--i);//delay 5us
+  33   1        OneWire_DQ=1;
+  34   1        i = 1;while (--i);//delay 5us
+  35   1        Bit=OneWire_DQ;
+  36   1        i = 22;while (--i);//delay 50us
+  37   1        return Bit;
+  38   1      }
+  39          
+  40          void OneWire_SendByte(unsigned char Byte)
+  41          {
+  42   1        unsigned char i;
+  43   1        for(i=0;i<8;i++)
+  44   1        {
+  45   2          OneWire_SendBit(Byte&(0x01<<i));
+  46   2        }
+  47   1      }
+  48          
+  49          unsigned char OneWire_ReceiveByte(void)
+  50          {
+  51   1        unsigned char i;
+  52   1        unsigned char Byte=0x00;
+  53   1        for(i=0;i<8;i++)
+  54   1        {
+C51 COMPILER V9.54   ONE_WIRE                                                              09/03/2021 23:10:33 PAGE 2   
+
+  55   2          if(OneWire_ReceiveBit()){Byte|=(0x01<<i);}
+  56   2        }
+  57   1        return Byte;
+  58   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    122    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

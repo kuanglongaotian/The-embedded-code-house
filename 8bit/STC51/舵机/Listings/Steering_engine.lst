@@ -1,0 +1,38 @@
+C51 COMPILER V9.54   STEERING_ENGINE                                                       09/09/2021 12:15:18 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE STEERING_ENGINE
+OBJECT MODULE PLACED IN .\Objects\Steering_engine.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE Steering_engine.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\List
+                    -ings\Steering_engine.lst) TABS(2) OBJECT(.\Objects\Steering_engine.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          
+   3          /*
+   4          舵机周期为20ms，一个周期的高电平持续时间影响转动角度
+   5          0.5ms——0度；
+   6          1.0ms——45度；
+   7          1.5ms——90度；
+   8          2.0ms—–135度；
+   9          2.5ms—–180度；
+  10          */
+  11          
+  12          //Electric Potential Time
+  13          unsigned int SteeringEngine_HEPT[]={65074,64613,64153,63692,63230};
+  14          unsigned int SteeringEngine_LEPT[]={47564,48025,48485,48946,49406};
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     20    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

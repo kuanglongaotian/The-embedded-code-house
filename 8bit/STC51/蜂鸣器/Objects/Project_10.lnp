@@ -1,0 +1,9 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\Delay1ms.obj",
+".\Objects\Key.obj",
+".\Objects\Buzzer_Time.obj",
+".\Objects\Timer0.obj" 
+TO ".\Objects\Project_10" 
+PRINT(".\Listings\Project_10.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

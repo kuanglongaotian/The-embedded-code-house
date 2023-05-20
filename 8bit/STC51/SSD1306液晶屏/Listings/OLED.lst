@@ -1,0 +1,181 @@
+C51 COMPILER V9.54   OLED                                                                  10/08/2021 16:24:39 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE OLED
+OBJECT MODULE PLACED IN .\Objects\OLED.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE OLED.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\OLED.l
+                    -st) TABS(2) OBJECT(.\Objects\OLED.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "I2c.H"
+   3          #include "font.H"
+   4          
+   5          #define Max_Column  128 //行
+   6          #define Max_Row   64 //列
+   7          
+   8          void Write_IIC_Command(unsigned char IIC_Command)
+   9          {
+  10   1        I2c_Start();
+  11   1        I2c_SendByte(0x78);            //Slave address,SA0=0
+  12   1        I2c_ReceiveAck();
+  13   1        I2c_SendByte(0x00);     //write command
+  14   1        I2c_ReceiveAck();
+  15   1        I2c_SendByte(IIC_Command);
+  16   1        I2c_ReceiveAck();
+  17   1        I2c_Stop();
+  18   1      }
+  19          
+  20          void Write_IIC_Data(unsigned char IIC_Data)
+  21          {
+  22   1        I2c_Start();
+  23   1        I2c_SendByte(0x78);     //D/C#=0; R/W#=0
+  24   1        I2c_ReceiveAck();
+  25   1        I2c_SendByte(0x40);     //write data
+  26   1        I2c_ReceiveAck();
+  27   1        I2c_SendByte(IIC_Data);
+  28   1        I2c_ReceiveAck();
+  29   1        I2c_Stop();
+  30   1      }
+  31          //光标位置 y为0-7行，x为0-127列
+  32          void OLED_Set_Pos(unsigned char x, unsigned char y)
+  33          {
+  34   1        Write_IIC_Command(0xb0+y);//page0-page7(行)
+  35   1        Write_IIC_Command((((x)&0xf0)>>4)|0x10);//高四位
+  36   1        Write_IIC_Command(((x)&0x0f));//低四位
+  37   1      }
+  38          //清屏
+  39          void OLED_Clear(void)
+  40          {
+  41   1        unsigned char m,n;
+  42   1        for(m=0;m<8;m++)
+  43   1        {
+  44   2          Write_IIC_Command(0xb0+m);//page0-page7
+  45   2          Write_IIC_Command(0x00);//low(四位)column列 start address
+  46   2          Write_IIC_Command(0x10);//high(四位)column列 start address
+  47   2          for(n=0;n<128;n++)
+  48   2          {
+  49   3            Write_IIC_Data(0x00);
+  50   3          }
+  51   2        }
+  52   1      }
+  53          //在指定位置显示一个字符，size提供1和2两种大小
+  54          //当size为1时，y为0-7行，x为0-127列
+C51 COMPILER V9.54   OLED                                                                  10/08/2021 16:24:39 PAGE 2   
+
+  55          //当size为2时，y为0-3行，x为0-127列
+  56          void OLED_ShowChar(unsigned char y,unsigned char x,unsigned char chr,unsigned char sizes)
+  57          {
+  58   1        unsigned char c=0,i=0;
+  59   1        c=chr-' ';//得到偏移后的值 
+  60   1        if(x>Max_Column-1)
+  61   1        {
+  62   2          x=0;
+  63   2          y=y+2;
+  64   2        }
+  65   1        if(sizes==2)
+  66   1        {
+  67   2          OLED_Set_Pos(x,y);//列，行
+  68   2          for(i=0;i<8;i++)
+  69   2            Write_IIC_Data(zf8x16[c*16+i]);
+  70   2          OLED_Set_Pos(x,y+1);
+  71   2          for(i=0;i<8;i++)
+  72   2            Write_IIC_Data(zf8x16[c*16+i+8]);
+  73   2        }
+  74   1        else if(sizes==1)
+  75   1        {
+  76   2          OLED_Set_Pos(x,y);//列，行
+  77   2          for(i=0;i<6;i++)
+  78   2            Write_IIC_Data(zf6x8[c][i]);
+  79   2        }
+  80   1      }
+  81          //m^n次方函数
+  82          unsigned long oled_pow(unsigned char m,unsigned char n)
+  83          {
+  84   1        unsigned long result=1;
+  85   1        while(n--)result*=m;
+  86   1        return result;
+  87   1      }
+  88          //显示数字
+  89          //x,y :起点坐标
+  90          //len :数字的位数
+  91          //num:范围(0~4294967295)
+  92          //mode:显示格式，为0时，当要显示的最高位为0时显示空格；为1时，显示0
+  93          void OLED_ShowNum(unsigned char y,unsigned char x, unsigned long num, unsigned char len,unsigned char mode
+             -,unsigned char sizes)
+  94          {
+  95   1        unsigned char t,temp;
+  96   1        unsigned char enshow=0;
+  97   1        for(t=0;t<len;t++)
+  98   1        {
+  99   2          temp=(num/oled_pow(10,len-t-1))%10;
+ 100   2          if(enshow==0&&t<(len-1))
+ 101   2          {
+ 102   3            if(temp==0)
+ 103   3            {
+ 104   4              if(mode==0)
+ 105   4                OLED_ShowChar(y,x+8*t,' ',sizes);
+ 106   4              else
+ 107   4                OLED_ShowChar(y,x+8*t,'0',sizes);
+ 108   4              continue;
+ 109   4            }
+ 110   3            else enshow=1;
+ 111   3          }
+ 112   2          OLED_ShowChar(y,x+8*t,temp+'0',sizes);
+ 113   2        }
+ 114   1      }
+ 115          //SSD1306初始化。复位后，默认页寻址模式
+C51 COMPILER V9.54   OLED                                                                  10/08/2021 16:24:39 PAGE 3   
+
+ 116          void OLED_Init(void)
+ 117          {
+ 118   1        Write_IIC_Command(0xAE); //--display off
+ 119   1        Write_IIC_Command(0x00); //---set low column address
+ 120   1        Write_IIC_Command(0x10); //---set high column address
+ 121   1        Write_IIC_Command(0x40); //--set start line address
+ 122   1        Write_IIC_Command(0xB0); //--set page address
+ 123   1        Write_IIC_Command(0x81); // contract control
+ 124   1        Write_IIC_Command(0xFF); //--128
+ 125   1        Write_IIC_Command(0xA1); //set segment remap
+ 126   1        Write_IIC_Command(0xA6); //--normal / reverse
+ 127   1        Write_IIC_Command(0xA8); //--set multiplex ratio(1 to 64)
+ 128   1        Write_IIC_Command(0x3F); //--1/32 duty
+ 129   1        Write_IIC_Command(0xC8); //Com scan direction
+ 130   1        Write_IIC_Command(0xD3); //-set display offset
+ 131   1        Write_IIC_Command(0x00); //
+ 132   1      
+ 133   1        Write_IIC_Command(0xD5); //set osc division
+ 134   1        Write_IIC_Command(0x80); //
+ 135   1      
+ 136   1        Write_IIC_Command(0xD8); //set area color mode off
+ 137   1        Write_IIC_Command(0x05); //
+ 138   1      
+ 139   1        Write_IIC_Command(0xD9); //Set Pre-Charge Period
+ 140   1        Write_IIC_Command(0xF1); //
+ 141   1      
+ 142   1        Write_IIC_Command(0xDA); //set com pin configuartion
+ 143   1        Write_IIC_Command(0x12); //
+ 144   1      
+ 145   1        Write_IIC_Command(0xDB); //set Vcomh
+ 146   1        Write_IIC_Command(0x30); //
+ 147   1      
+ 148   1        Write_IIC_Command(0x8D); //set charge pump enable
+ 149   1        Write_IIC_Command(0x14); //
+ 150   1      
+ 151   1        Write_IIC_Command(0xAF); //--turn on oled panel
+ 152   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    672    ----
+   CONSTANT SIZE    =   2072    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      29
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

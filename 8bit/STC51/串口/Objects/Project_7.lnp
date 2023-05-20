@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\UART.obj" 
+TO ".\Objects\Project_7" 
+PRINT(".\Listings\Project_7.m51") RAMSIZE(256) 

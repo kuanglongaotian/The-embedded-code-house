@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\Nixie_tube.obj" 
+TO ".\Objects\Project_2" 
+PRINT(".\Listings\Project_2.m51") RAMSIZE(256) 

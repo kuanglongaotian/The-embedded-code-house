@@ -1,0 +1,9 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\Steering_engine.obj",
+".\Objects\Timer0.obj",
+".\Objects\Delay1ms.obj",
+".\Objects\Key.obj" 
+TO ".\Objects\Project_16" 
+PRINT(".\Listings\Project_16.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

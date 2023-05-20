@@ -1,0 +1,118 @@
+C51 COMPILER V9.54   MAIN                                                                  09/03/2021 23:31:48 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.l
+                    -st) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "DS18B20.H"
+   3          #include "LCD1602.H"
+   4          #include "AT24C02.H"
+   5          #include "Key.H"
+   6          #include "Delay1ms.H"
+   7          
+   8          float T,Tshow;
+   9          char Thigh,Tlow;
+  10          unsigned char KeyNum;
+  11          
+  12          void main()
+  13          {
+  14   1        DS18B20_ConvertT();
+  15   1        Delay1ms(1000);
+  16   1        Thigh=AT24C02_ReadByte(0);  //读取温度阈值数据
+  17   1        Tlow=AT24C02_ReadByte(1);
+  18   1        if(Thigh>125 || Tlow<-55 || Thigh<=Tlow)//如果阈值非法，则设为默认值
+  19   1        {
+  20   2          Thigh=25;     
+  21   2          Tlow=18;
+  22   2        }
+  23   1        
+  24   1        LCD_Init();
+  25   1        LCD_ShowString(1,1,"T:");
+  26   1        LCD_ShowString(2,1,"TH:");
+  27   1        LCD_ShowString(2,9,"TL:");
+  28   1        LCD_ShowSignedNum(2,4,Thigh,3);
+  29   1        LCD_ShowSignedNum(2,12,Tlow,3);
+  30   1        
+  31   1        while(1)
+  32   1        {
+  33   2          KeyNum=Key();
+  34   2          DS18B20_ConvertT();
+  35   2          T=DS18B20_ReadT();
+  36   2          if(T<0)
+  37   2          {
+  38   3            LCD_ShowChar(1,3,'-');
+  39   3            Tshow=-T;
+  40   3          }
+  41   2          else
+  42   2          {
+  43   3            LCD_ShowChar(1,3,'+');
+  44   3            Tshow=T;
+  45   3          }
+  46   2          LCD_ShowNum(1,4,Tshow,3);
+  47   2          LCD_ShowChar(1,7,'.');
+  48   2          LCD_ShowNum(1,8,(unsigned long)(Tshow*10000)%10000,4);
+  49   2          
+  50   2          if(KeyNum)
+  51   2          {
+  52   3            if(KeyNum==1) //K1按键，THigh自增
+  53   3            {
+  54   4              Thigh++;
+C51 COMPILER V9.54   MAIN                                                                  09/03/2021 23:31:48 PAGE 2   
+
+  55   4              if(Thigh>125){Thigh=125;}
+  56   4            }
+  57   3            if(KeyNum==2) //K2按键，THigh自减
+  58   3            {
+  59   4              Thigh--;
+  60   4              if(Thigh<=Tlow){Thigh++;}
+  61   4            }
+  62   3            if(KeyNum==3) //K3按键，TLow自增
+  63   3            {
+  64   4              Tlow++;
+  65   4              if(Tlow>=Thigh){Tlow--;}
+  66   4            }
+  67   3            if(KeyNum==4) //K4按键，TLow自减
+  68   3            {
+  69   4              Tlow--;
+  70   4              if(Tlow<-55){Tlow=-55;}
+  71   4            }
+  72   3            LCD_ShowSignedNum(2,4,Thigh,3);
+  73   3            LCD_ShowSignedNum(2,12,Tlow,3);
+  74   3            AT24C02_WriteByte(0,Thigh);//写入到At24C02中保存,并延时5ms
+  75   3            Delay1ms(5);
+  76   3            AT24C02_WriteByte(1,Tlow);
+  77   3            Delay1ms(5);
+  78   3          }
+  79   2          if(T>Thigh)     //越界判断
+  80   2          {
+  81   3            LCD_ShowString(1,13,"OV:H");
+  82   3          }
+  83   2          else if(T<Tlow)
+  84   2          {
+  85   3            LCD_ShowString(1,13,"OV:L");
+  86   3          }
+  87   2          else
+  88   2          {
+  89   3            LCD_ShowString(1,13,"    ");
+  90   3          }
+  91   2        }
+  92   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    540    ----
+   CONSTANT SIZE    =     26    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     11    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

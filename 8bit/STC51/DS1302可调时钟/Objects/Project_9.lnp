@@ -1,0 +1,10 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\LCD1602.obj",
+".\Objects\DS1302.obj",
+".\Objects\Key.obj",
+".\Objects\Delay1ms.obj",
+".\Objects\Timer0.obj" 
+TO ".\Objects\Project_9" 
+PRINT(".\Listings\Project_9.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

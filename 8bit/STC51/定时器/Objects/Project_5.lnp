@@ -1,0 +1,7 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\Timer0.obj",
+".\Objects\Key.obj",
+".\Objects\Delay1ms.obj" 
+TO ".\Objects\Project_5" 
+PRINT(".\Listings\Project_5.m51") RAMSIZE(256) 

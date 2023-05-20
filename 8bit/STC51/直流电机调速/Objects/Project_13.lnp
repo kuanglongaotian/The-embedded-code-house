@@ -1,0 +1,8 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\Key.obj",
+".\Objects\Nixie_tube.obj",
+".\Objects\Timer0.obj",
+".\Objects\Delay1ms.obj" 
+TO ".\Objects\Project_13" 
+PRINT(".\Listings\Project_13.m51") RAMSIZE(256) 

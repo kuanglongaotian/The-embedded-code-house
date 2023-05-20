@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\Matrix_Led.obj" 
+TO ".\Objects\Project_8" 
+PRINT(".\Listings\Project_8.m51") RAMSIZE(256) 

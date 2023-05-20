@@ -1,0 +1,6 @@
+".\Objects\main.obj",
+".\Objects\I2c.obj",
+".\Objects\OLED.obj" 
+TO ".\Objects\Project" 
+PRINT(".\Listings\Project.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

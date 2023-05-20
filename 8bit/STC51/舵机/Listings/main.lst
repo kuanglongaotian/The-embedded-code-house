@@ -1,0 +1,64 @@
+C51 COMPILER V9.54   MAIN                                                                  01/29/2022 17:10:42 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.l
+                    -st) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Steering_engine.H"
+   3          #include "Timer0.H"
+   4          #include "Key.H"
+   5          
+   6          unsigned char Rad=4;
+   7          unsigned char KeyNum;
+   8          
+   9          void main()
+  10          {
+  11   1        Timer0_Init();
+  12   1        while(1)
+  13   1        {
+  14   2          KeyNum=Key();
+  15   2          if(KeyNum)
+  16   2          {
+  17   3            if(KeyNum==1){Rad++;Rad%=5;}//大于4时，清零
+  18   3            if(KeyNum==2){Rad--;if(Rad==255){Rad=4;}}//小于0时，回4
+  19   3          }
+  20   2        }
+  21   1      }
+  22          
+  23          void Timer0_Routine() interrupt 1
+  24          { 
+  25   1        static unsigned char T=1;
+  26   1        if(T==1)
+  27   1        {
+  28   2          TH0=SteeringEngine_HEPT[Rad]/256;//500us
+  29   2          TL0=SteeringEngine_HEPT[Rad]%256+1;
+  30   2          P0_0=1;
+  31   2          T=0;
+  32   2        }
+  33   1        else if(T==0)
+  34   1        {
+  35   2          TH0=SteeringEngine_LEPT[Rad]/256;//19500us
+  36   2          TL0=SteeringEngine_LEPT[Rad]%256+1;
+  37   2          P0_0=0;
+  38   2          T=1;
+  39   2        }
+  40   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    135    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
