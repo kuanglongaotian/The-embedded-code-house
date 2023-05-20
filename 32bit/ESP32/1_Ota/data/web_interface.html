@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <title>ESP32debug The Web Login interface </title>
+    <script type="text/javascript" src="clock.js"></script>
+</head>
+<body>
+	<center>
+    <a href="http://www.taichi-maker.com" target="_black"><img src="/img/taichi-maker.jpg" alt="太极创客"></a>
+    <h1>ESP8266 SPIFFS web server示例</h1>
+    <p>此页面用于演示如何通过ESP8266开发板的SPIFFS中读取文件并显示于浏览器中。</p>
+    <p>本教程可在太极创客网站免费获取。太极创客网址： <a href="http://www.taichi-maker.com" target="_black">www.taichi-maker.com</a> .
+    <p class="red">创建页面时可以使用css。这里的字体是红色，原因是使用了css。</p>
+
+    <!--显示时钟-->
+	<h3>页面支持JavaScript，以下时钟/日期使用JavaScript实现。</h3>
+    <h1 id="date"></h1>
+    <span id="msg" style="font-size: 30px;background-color: greenyellow;"></span>
+	</center>
+  <form name='loginForm'>
+    <table width='20%' bgcolor='A09F9F' align='center'>
+    <tr>
+    <td colspan=2>
+    <center><font size=4><b>ESP32 Login For Update</b></font></center>
+    <br>
+    </td>
+    <br>
+    <br>
+    </tr>
+    <td>Username:</td>
+    <td><input type='text' size=25 name='userid'><br></td>
+    </tr>
+    <br>
+    <br>
+    <tr>
+    <td>Password:</td>
+    <td><input type='Password' size=25 name='pwd'><br></td>
+    <br>
+    <br>
+    </tr>
+    <tr>
+    <td><input type='submit' onclick='check(this.form)' value='Login'></td>
+    </tr>
+    </table>
+    </form>
+    <script>
+    function check(form)
+    {
+        if(form.userid.value=='esp32user' && form.pwd.value=='123456')
+        {
+            window.open('/web_servce')
+        }
+        else
+        {
+            alert('Error Password or Username')/*displays error message*/
+        }
+    }
+    </script>
+</body>
+</html>
